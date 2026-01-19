@@ -35,6 +35,9 @@ class ResourceResults extends HTMLElement {
   _handleResultClick(event) {
     const clickedElement = event.target.closest('button[data-id]'); // select closest button
     if (clickedElement) { // did we find anything?
+      this.shadowRoot.querySelector('button.active')?.classList.remove('active'); // remove active class from previously selected button if any
+      clickedElement.classList.add('active'); // add active class to the clicked button
+
       const selectedId = clickedElement.getAttribute('data-id'); // ok now select the data-id from the selected button
       // search the results for the data that matches the selectedId (data-id attribute)
       const resource = this.#results.find(r => r.id === selectedId); // find the resource that matches the selectedId (data-id attribute)
