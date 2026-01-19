@@ -57,4 +57,9 @@ const resultData = [
 const resultsComponent = document.querySelector('resource-results');
 resultsComponent.results = resultData;
 
-// TODO: Listen for resourceSelected event and update resource-details component
+// TODO: Listen for resourceSelected event and update resource-details component FINISHED
+const detailsComponent = document.querySelector('resource-details');
+
+resultsComponent.addEventListener('resource-selected', function (event) {
+  detailsComponent.resource = event.detail.resource;
+});
