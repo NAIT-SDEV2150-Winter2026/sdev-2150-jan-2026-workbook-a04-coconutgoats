@@ -20,8 +20,8 @@ class ResourceResults extends HTMLElement {
   #results = [];
   constructor() {
     super();
-    // TODO: Bind the handleResultClick method to this instance
-
+    // TODO: Bind the handleResultClick method to this instance FINISHED
+    this._handleResultClick = this._handleResultClick.bind(this); // a scoping thing. wiring it
     this.attachShadow({ mode: 'open' });
   }
 
@@ -49,12 +49,15 @@ class ResourceResults extends HTMLElement {
   }
 
   connectedCallback() {
-    // TODO: Add a click event listener to handle result selection
-
+    // TODO: Add a click event listener to handle result selection FINISHED
+    this.shadowRoot.addEventListener('click', this._handleResultClick);
     this.render();
   }
 
-  // TODO: Clean up event listener in disconnectedCallback
+  // TODO: Clean up event listener in disconnectedCallback FINISHED
+  disconnectedCallback() {
+    this.shadowRoot.removeEventListener('click', this._handleResultClick);
+  }
 
   render() {
     // TODO: Update to render from the private results field, if it's empty, show "No results found" message FINISHED
