@@ -18,14 +18,22 @@ class ResourceResults extends HTMLElement {
   #results = [];
   #filteredResults = [];
 
+  // Step 3: Store the filtered dataset and current filters, then derive and render filtered results.
+  // TODO: Keep a filtered copy of the dataset (e.g., #filteredResults).
+  // TODO: Add a private filters field that triggers filtering and re-render.
+
   constructor() {
     super();
     this._handleResultClick = this._handleResultClick.bind(this);
     this.attachShadow({ mode: 'open' });
   }
 
+  // TODO: Add a filters property (e.g., set filters(filters)) that triggers filtering and re-render.
+
   set results(data) {
     this.#results = data;
+    // Step 3: Set the filtered results initially to the full dataset.
+    // TODO: Initialize the filtered results.
     this.#filteredResults = this.#results;
     this.render();
   }
