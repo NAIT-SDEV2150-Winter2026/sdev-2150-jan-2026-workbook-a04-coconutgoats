@@ -17,7 +17,7 @@ template.innerHTML = `
 // TODO: Stage 2: This component will optionally fetch its own data
 // when a `source` attribute is provided (attribute-driven async side effects)
 class ResourceResults extends HTMLElement {
-  // TODO: OPTIONAL EXERCISE: Track loading and error state when fetching from `source`
+  // TODO: Optional Exercise: Track loading and error state when fetching from `source`
   // Example: #isLoading = false; #error = null;
   #results = [];
   #filteredResults = [];
@@ -27,6 +27,8 @@ class ResourceResults extends HTMLElement {
     openNow: false,
     virtual: false,
   };
+  #error = null;
+  #isLoading = false;
 
   constructor() {
     super();
@@ -50,14 +52,14 @@ class ResourceResults extends HTMLElement {
 
   // TODO: Stage 2: Private method to fetch data from the provided source URL
 
-  // TODO: Stage 2: When the `source` attribute changes:
-  // - Avoid refetching if the value is unchanged DONE
+  // TODO: Stage 2: DONE - When the `source` attribute changes:
+  // - DONE - Avoid refetching if the value is unchanged
   // - fetch(source)
   // - EXERCISE: handle loading and error states
   // - set results with fetched data
-  // TODO: Stage 2: Observe the `source` attribute DONE
-  static get observeAttributes() {
-    return ['source']; // watches for changes in source attribute. can use it for observing classes, ids, whatever
+  // DONE: Stage 2: Observe the `source` attribute
+  static get observedAttributes() {
+    return ['source'];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -70,14 +72,17 @@ class ResourceResults extends HTMLElement {
 
   async #fetchData(source) {
     try {
+      this.#isLoading = true; // for the exercise
       const response = await fetch(source);
       if (!response.ok) {
         throw new Error(`Network problem: ${response.statusText}`);
       }
-      const resultData = await response.json;
+      const resultData = await response.json();
       this.results = resultData;
+      this.#isLoading = false; // for the exercise
     } catch (error) {
-      console.error('Failed to fetch data', error);
+      console.error('Failed to fetch data:', error);
+      this.#error = true; // for the exercise
     }
   }
 
@@ -151,7 +156,7 @@ class ResourceResults extends HTMLElement {
   render() {
     const content = template.content.cloneNode(true);
 
-    // TODO: Stage 2: Render loading and error states before results when fetching asynchronously
+    // EXERCISE: Stage 2: Render loading and error states before results when fetching asynchronously
     if (this.#filteredResults.length) {
       // Generate the list of results to display
       const resultsHtml = this.#filteredResults.map(result => `<button type="button" class="list-group-item list-group-item-action" data-id="${result.id}">

@@ -4,7 +4,7 @@ import './components/resource-filters.js';
 import './components/resource-results.js';
 import './components/resource-details.js';
 
-// TODO: Stage 1: Replace hard-coded data with a fetch() call FINISHED
+// TODO: Stage 1: Replace hard-coded data with a fetch() call
 // Sample data for resources
 // const response = await fetch('http://localhost:3000/resources');
 // const resultData = await response.json();
@@ -33,4 +33,4 @@ resultsComponent.addEventListener('resource-selected', (event) => {
 // Option 1: set the source attribute to a URL string hrere in code or
 // Option 2: set the source attribute directly in the HTML markup (index.html)
 
-// resultsComponent.setAttribute('source', 'http://localhost:3000/resources')
+// resultsComponent.setAttribute('source', 'http://localhost:3000/resources');
