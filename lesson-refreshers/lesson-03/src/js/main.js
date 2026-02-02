@@ -50,6 +50,17 @@ const resultData = [
     virtual: false,
     openNow: true,
   },
+  {
+    id: 'recreation',
+    title: 'Recreation Services',
+    category: 'Wellness',
+    summary: 'Fitness and recreational activities.',
+    location: 'Building C, Room C205',
+    hours: 'Mon-Sun 08:00-20:00',
+    contact: 'recreation@nait.ca',
+    virtual: false,
+    openNow: true,
+  },
 ];
 
 // TODO: Pass data to resource-results component
