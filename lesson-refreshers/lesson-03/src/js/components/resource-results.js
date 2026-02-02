@@ -10,73 +10,86 @@ template.innerHTML = `
       </div>
 
       <div class="list-group list-group-flush">
-        <button type="button" class="list-group-item list-group-item-action active" aria-current="true">
-          <div class="d-flex w-100 justify-content-between">
-            <h2 class="h6 mb-1">Peer Tutoring Centre</h2>
-            <small>Academic</small>
-          </div>
-          <p class="mb-1 small text-body-secondary">Drop-in tutoring and study support.</p>
-          <small class="text-body-secondary">Building W, Room W101</small>
-        </button>
-
-        <button type="button" class="list-group-item list-group-item-action">
-          <div class="d-flex w-100 justify-content-between">
-            <h2 class="h6 mb-1">Counselling Services</h2>
-            <small>Wellness</small>
-          </div>
-          <p class="mb-1 small text-body-secondary">Confidential mental health supports.</p>
-          <small class="text-body-secondary">Virtual and in-person</small>
-        </button>
-
-        <button type="button" class="list-group-item list-group-item-action">
-          <div class="d-flex w-100 justify-content-between">
-            <h2 class="h6 mb-1">Student Awards and Bursaries</h2>
-            <small>Financial</small>
-          </div>
-          <p class="mb-1 small text-body-secondary">Funding options and application help.</p>
-          <small class="text-body-secondary">Student Services, Main Floor CAT</small>
-        </button>
-
-        <button type="button" class="list-group-item list-group-item-action">
-          <div class="d-flex w-100 justify-content-between">
-            <h2 class="h6 mb-1">IT Service Desk</h2>
-            <small>Tech</small>
-          </div>
-          <p class="mb-1 small text-body-secondary">Account access, Wi-Fi, BYOD support.</p>
-          <small class="text-body-secondary">Library</small>
-        </button>
+        <!-- Buttons go here, will be generated dynamically -->
       </div>
     </div>
   </section>`;
 
 class ResourceResults extends HTMLElement {
   // TODO: Create a private field for results data
+  #results = [];
 
   constructor() {
     super();
     // TODO: Bind the handleResultClick method to this instance
-
+    this._handleResultClick = this._handleResultClick.bind(this); // scoping the method to this instance
     this.attachShadow({ mode: 'open' });
   }
 
   // TODO: Implement setter for results data, remember to render
+  set results(data) {
+    this.#results = data;
+    this.render();
+  }
 
   // TODO: Add an event handler method for result selection
+  _handleResultClick(event) {
+    const clickedElement = event.target.closest('button[data-id]');
+    if (clickedElement) {
+      this.shadowRoot.querySelector('button.active')?.classList.remove('active'); // remove active class frome existing active button
+      clickedElement.classList.add('active'); // add active class to clicked button
+
+      // select id
+      const selectedId = clickedElement.getAttribute('data-id');
+      const resource = this.#results.find(r => r.id === selectedId);
+
+      const selectedEvent = new CustomEvent('resource-selected', {
+        detail: { resource },
+        bubbles: true,
+        composed: true,
+      });
+      this.dispatchEvent(selectedEvent);
+    }
+  }
 
   connectedCallback() {
     // TODO: Add a click event listener to handle result selection
-    
+    this.shadowRoot.addEventListener('click', this._handleResultClick);
     this.render();
   }
 
   // TODO: Clean up event listener in disconnectedCallback
-
-  
+  disconnectedCallback() {
+    // same thing as connectedCallback but when elememt is removed from DOM
+    this.shadowRoot.removeEventListener('click', this._handleResultClick);
+  }
 
   render() {
     // TODO: Update to render from the private results field, if it's empty, show "No results found" message
-    
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
+    const node = template.content.cloneNode(true);
+    const listGroup = node.querySelector('.list-group');
+    if (!this.#results || this.#results.length === 0) {
+      // this would be an alert to debug
+      ;
+    } else {
+      for (const result of this.#results) {
+        const listGroupContent = `
+        <button data-id="${result.id}" type="button" class="list-group-item list-group-item-action">
+          <div class="d-flex w-100 justify-content-between">
+            <h2 class="h6 mb-1">${result.title}</h2>
+            <small>${result.category}</small>
+          </div>
+          <p class="mb-1 small text-body-secondary">${result.summary}</p>
+          <small class="text-body-secondary">${result.location}</small>
+        </button>
+        `;
+
+        listGroup.innerHTML += listGroupContent;
+      }
+    }
+
+    this.shadowRoot.innerHTML = ''; // Clear existing content
+    this.shadowRoot.appendChild(node);
   }
 }
 
