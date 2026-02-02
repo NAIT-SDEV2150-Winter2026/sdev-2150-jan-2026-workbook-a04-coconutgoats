@@ -83,17 +83,6 @@ const resultData = [
     virtual: true,
     openNow: true,
   },
-  {
-    id: 'library',
-    title: 'Library Services',
-    category: 'Academic',
-    summary: 'Research help and study spaces.',
-    location: 'Library Building',
-    hours: 'Mon-Sat 09:00-18:00',
-    contact: 'library@nait.ca',
-    virtual: true,
-    openNow: false,
-  },
 ];
 
 // TODO: Pass data to resource-results component
