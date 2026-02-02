@@ -83,6 +83,28 @@ const resultData = [
     virtual: true,
     openNow: true,
   },
+  {
+    id: 'library',
+    title: 'Library Services',
+    category: 'Academic',
+    summary: 'Research help and study spaces.',
+    location: 'Library Building',
+    hours: 'Mon-Sat 09:00-18:00',
+    contact: 'library@nait.ca',
+    virtual: true,
+    openNow: false,
+  },
+  {
+    id: 'health',
+    title: 'Health Services',
+    category: 'Wellness',
+    summary: 'On-campus medical support.',
+    location: 'Health Centre, Main Campus',
+    hours: 'Mon-Fri 09:00-17:00',
+    contact: 'health@nait.ca',
+    virtual: false,
+    openNow: true,
+  },
 ];
 
 // TODO: Pass data to resource-results component
