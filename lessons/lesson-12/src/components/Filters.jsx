@@ -77,7 +77,7 @@ export default function Filters() {
               Open now: {openNow ? 'Yes' : 'No'}
             </p>
 
-            <label className={`${virtualOption ? 'text-red-500' : 'text-gray-700'} flex items-center gap-2 text-sm`}>
+            <label className='flex items-center gap-2 text-sm text-gray-700'>
               <input
                 type="checkbox"
                 id="virtual"
@@ -85,7 +85,7 @@ export default function Filters() {
                 checked={virtualOption}
                 onChange={(e) => setVirtualOption(e.target.checked)}
               />
-              Virtual options
+              <span className={virtualOption? 'text-primary' : 'text-gray-700'}>Virtual options</span>
             </label>
             <p className="text-sm">
               Virtual? {virtualOption ? 'Yes' : 'No'}
