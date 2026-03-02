@@ -19,6 +19,9 @@ export default function Filters() {
 
   const [openNow, setOpenNow] = useState(false);
 
+  // exercise: virtual options checked, make text red!
+  const [virtualOption, setVirtualOption] = useState(false);
+
   return (
     <Card title="Filters">
       <div className="space-y-4 p-4">
@@ -68,20 +71,25 @@ export default function Filters() {
                 checked={openNow}
                 onChange={(e) => setOpenNow(e.target.checked)}
               />
-              Open now |
-              <p className="text-sm">
-                Open now only: {openNow ? 'Yes' : 'No'}
-              </p>
+              Open now
             </label>
+            <p className="text-sm">
+              Open now: {openNow ? 'Yes' : 'No'}
+            </p>
 
-            <label className="flex items-center gap-2 text-sm text-gray-700">
+            <label className={`${virtualOption ? 'text-red-500' : 'text-gray-700'} flex items-center gap-2 text-sm`}>
               <input
                 type="checkbox"
                 id="virtual"
                 className="checkbox"
+                checked={virtualOption}
+                onChange={(e) => setVirtualOption(e.target.checked)}
               />
               Virtual options
             </label>
+            <p className="text-sm">
+              Virtual? {virtualOption ? 'Yes' : 'No'}
+            </p>
           </div>
 
           <hr className="border-gray-200" />
