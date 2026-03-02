@@ -1,7 +1,22 @@
 import Card from './ui/Card';
+import { useState } from 'react';
 
 // src/components/Filters.jsx
 export default function Filters() {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  function toggleCategory(category) {
+    setSelectedCategories((prev) => {
+      if (prev.includes(category)) {
+        return prev.filter((c) => c !== category);
+      }
+
+      return [...prev, category];
+    });
+  }
+
   return (
     <Card title="Filters">
       <div className="space-y-4 p-4">
@@ -11,11 +26,15 @@ export default function Filters() {
               Search
             </label>
             <input
-              id="q"
               type="text"
-              placeholder="Try: tutoring, mental health, bursary"
-              className="w-full rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="input input-bordered w-full"
+              placeholder="try: tutoring, mental health, bursary"
             />
+            <p className="text-sm text-base-content/70">
+              Searching for: {searchTerm}
+            </p>
           </div>
 
           <hr className="border-gray-200" />
@@ -27,7 +46,8 @@ export default function Filters() {
                 <button
                   key={label}
                   type="button"
-                  className="rounded border border-sky-600 px-3 py-1 text-xs font-semibold text-sky-700 hover:bg-sky-50"
+                  className={`${selectedCategories.includes(label) && 'bg-sky-600 text-white hover:bg-sky-800'} rounded border border-sky-600 px-3 py-1 text-xs font-semibold text-sky-700 hover:bg-sky-50`}
+                  onClick={() => toggleCategory(label)}
                 >
                   {label}
                 </button>
