@@ -1,12 +1,5 @@
 import Card from './ui/Card';
 
-//searchTerm={searchTerm}
-// onSearchChange={setSearchTerm}
-// selectedCategories={selectedCategories}
-// onCategoryToggle={setSelectedCategories}
-// openNowOnly={openNowOnly}
-// onOpenNowChange={setOpenNowOnly}
-
 export default function Filters({searchTerm, onSearchChange, selectedCategories, onCategoryToggle, openNowOnly, onOpenNowChange}) {
   
 

@@ -2,29 +2,15 @@ import ResultsItem from './ResultsItem';
 import { resources } from '../data/resources';
 import Card from './ui/Card';
 
-export default function Results(selectedResource, onSelectResource, searchTerm, selectedCategories, openNowOnly) {
-
-//   }
-//     id: 'tutoring',
-//     title: 'Peer Tutoring Centre',
-//     category: 'Academic',
-//     summary: 'Drop-in tutoring and study support.',
-//     location: 'Building W, Room W101',
-//     openNow: true,
-//   },
+export default function Results({selectedResource, onSelectResource, searchTerm, selectedCategories, openNowOnly}) {
 
   let filteredResources = resources;
   if(openNowOnly)
     filteredResources = resources.filter((element) => element.openNow === openNowOnly);
-  if (selectedCategories && selectedCategories.length > 0)
+  if(selectedCategories && selectedCategories.length > 0 )
     filteredResources = filteredResources.filter((element) => selectedCategories.includes(element.category));
-  if (searchTerm !== '') {
-    filteredResources = filteredResources.filter((r) => 
-      r.title?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }
-
-
+  if (searchTerm !== '')
+    filteredResources = filteredResources.filter((r) => r.title?.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <Card title="Results">
