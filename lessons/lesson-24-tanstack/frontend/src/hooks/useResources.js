@@ -7,14 +7,12 @@ export function useResources() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Note: gets resources from backend
-  // Note: then saves them in "resources" (line 6 above)
   async function fetchResources(signal) {
     setIsLoading(true);
     setError(null);
 
     // delay for demo purposes
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     try {
       const res = await fetch(`${API_BASE_URL}/resources`, { signal });

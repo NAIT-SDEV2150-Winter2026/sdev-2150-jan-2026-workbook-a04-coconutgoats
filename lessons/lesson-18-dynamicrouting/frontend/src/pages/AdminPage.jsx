@@ -1,13 +1,25 @@
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router';
 import { useResources } from '../hooks/useResources';
 import Card from '../components/ui/Card';
+const [editingId, setEditingId] = useState(null);
+
+const EMPTY_FORM_DATA = {
+  title: '',
+  category: '',
+  summary: '',
+  location: '',
+  hours: '',
+  contact: '',
+  virtual: false,
+  openNow: false,
+};
 
 export default function AdminPage() {
   const [formData, setFormData] = useState({
     title: 'Study Group',
     category: 'Wellness',
-    summary: 'Some summary of the resource.',
+    summary: 'This is a new summary that i just added march 23.',
     location: 'NAIT Campus',
     hours: 'Mon-Fri 08:00-13:00',
     contact: 'study@nait.ca',
@@ -15,27 +27,88 @@ export default function AdminPage() {
     openNow: false,
   });
 
-  const { resources, addResource, isLoading, error, refetch } = useResources();
+  const { resources, addResource, isLoading, error, refetch } = useResources(); 
+  // note: react hooks start with "use" 
+  // note: just need to check if the hook is custom or not (check import directory)
 
-  async function handleCreateResource(e) {
+  async function handleCreateResource(e, formData) {
     e.preventDefault();
 
-    // Added as student exercise solution
-    addResource(formData);
+    const isEditing = Boolean(resourceId);
+    const url = isEditing
+      ? `http://localhost:3000/resources/${resourceId}`
+      : 'http://localhost:3000/resources';
 
-    // const res = await fetch('http://localhost:3000/resources', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(formData),
-    // });
+    const method = isEditing ? 'PUT' : 'POST';
 
-    // if (!res.ok) {
-    //   throw new Error('Could not create resource');
-    // }
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
 
-    // refetch();
+    if (!res.ok) {
+      throw new Error(`Could not ${isEditing ? 'update' : 'create'} resource`);
+    }
+
+    const savedResource = await res.json();
+    await refetch();
+
+    navigate(`/admin/${savedResource.id}`);
+  }
+
+  const { resourceId } = useParams();
+  const navigate = useNavigate();
+  let initialFormData = EMPTY_FORM_DATA;
+  let currentResource = null;
+  if(resourceId) {
+    currentResource = resources.find((item) => item.id === resourceId);
+    if(currentResource) {
+      initialFormData = {
+        title: currentResource.title,
+        category: currentResource.category,
+        summary: currentResource.summary,
+        location: currentResource.location,
+        hours: currentResource.hours,
+        contact: currentResource.contact,
+        virtual: currentResource.virtual,
+        openNow: currentResource.openNow,
+      };
+    }
+  }
+
+  function handleEditStart(resource) {
+    navigate(`/admin/${resource.id}`);
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    const isEditing = Boolean(resourceId);
+    const url = isEditing
+      ? `http://localhost:3000/resources/${resourceId}`
+      : 'http://localhost:3000/resources';
+
+    const method = isEditing ? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Could not ${isEditing ? 'update' : 'create'} resource`);
+    }
+
+    const savedResource = await res.json();
+    await refetch();
+
+    navigate(`/admin/${savedResource.id}`);
   }
 
   return (
@@ -57,52 +130,15 @@ export default function AdminPage() {
       )}
 
       <section className="md:col-span-3 lg:col-span-3">
-        <Card title="Resource Form">
-          <div className="card-body">
-            <form onSubmit={handleCreateResource} id="frm-add-resource" className="space-y-4">
-              <div className="space-y-1">
-                <label htmlFor="Title" className="block text-sm font-medium text-gray-700">
-                  Title
-                </label>
-                <input
-                  id="Title"
-                  type="text"
-                  className="w-full rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Resource title"
-                />
-              </div>
-
-              <hr className="border-gray-200" />
-
-              <div className="flex gap-2">
-                <button
-                  type="reset"
-                  className="rounded border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-                  onClick={() => setFormData({
-                    title: '',
-                    category: '',
-                    summary: '',
-                    location: '',
-                    hours: '',
-                    contact: '',
-                    virtual: false,
-                    openNow: false,
-                  })}
-                >
-                  Reset
-                </button>
-                <button
-                  type="submit"
-                  className="rounded bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700"
-                >
-                  Add Resource
-                </button>
-              </div>
-            </form>
-          </div>
-        </Card>
+        {(!resourceId || currentResource) && (
+        <ResourceForm
+          key={resourceId ?? 'new'}
+          initialData={initialFormData}
+          isEditing={Boolean(resourceId)}
+          onSubmit={handleSubmit}
+          onReset={() => navigate('/admin')}
+        />
+        )}
       </section>
 
       <section className="md:col-span-3 lg:col-span-3">
@@ -110,7 +146,11 @@ export default function AdminPage() {
           <div className="card-body">
             <ul className="space-y-2">
               {resources.map((resource) => (
-                <li key={resource.id} className="rounded border border-gray-200 p-3 ">
+                <li
+                  key={resource.id}
+                  className="rounded border border-gray-200 p-3 cursor-pointer hover:border-sky-400"
+                  onClick={() => handleEditStart(resource)}
+                >
                   <p className="font-semibold">{resource.title}</p>
                   <p className="text-sm text-base-content/70">{resource.category}</p>
                 </li>
